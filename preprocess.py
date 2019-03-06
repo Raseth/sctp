@@ -51,8 +51,9 @@ print(val_loss)
 print(val_acc)
 
 
-
-
+val_loss_dev, val_acc_dev = model.evaluate(x_dev, y_dev)
+print(val_loss_dev)
+print(val_acc_dev)
 
 a = 0
 
