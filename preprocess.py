@@ -38,21 +38,21 @@ x_dev = tf.keras.utils.normalize(x_dev, axis=1)
 ae_input_size = 200
 ae_train_dataset = NumpyDataset(np_array=x_train, batch_size=180000)
 ae_test_dataset = NumpyDataset(np_array=x_test, batch_size=10000)
-ae_dev_dataset = NumpyDataset(np_array=x_dev, batch_size=10000)
 
 ae_model = SymmetricAutoencoder([ae_input_size, 100, 100, 50], noise_stddev=0.01)
 opt = tf.keras.optimizers.Nadam(lr=0.0001)
 ae_model.compile(optimizer=opt, loss='mse')
 ae_model.summary()
 
-ae_model.fit(ae_train_dataset._dataset, epochs=5, steps_per_epoch=1,
-             validation_data=ae_test_dataset._dataset, validation_steps=1)
+# ae_model.fit(ae_train_dataset._dataset, epochs=5, steps_per_epoch=1,
+#              validation_data=ae_test_dataset._dataset, validation_steps=1)
 
-# ae_model.evaluate(ae_dev_dataset._dataset)
+model = SymmetricAutoencoder([ae_input_size, 100, 100, 50], noise_stddev=0.01)
+model.load_weights("./results/ae_weights.h5")
+ae_model.evaluate(x_dev)
 
-# x_train = tf.keras.utils.normalize(x_train, axis=1)
-# x_test = tf.keras.utils.normalize(x_test, axis=1)
-# x_dev = tf.keras.utils.normalize(x_dev, axis=1)
+
+#
 
 model = tf.keras.models.Sequential()
 

@@ -1,3 +1,5 @@
+import pandas as pd
+import numpy as np
 import tensorflow as tf
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Input, Dense, GaussianNoise, BatchNormalization, Dropout
@@ -56,9 +58,11 @@ class SymmetricAutoencoder:
         self.model.summary()
 
     def evaluate(self, x):
-        val_loss, val_acc = self.model.evaluate(x)
-        print(val_loss)
-        print(val_acc)
+        predictions = self.model.predict(x)
+        mse = np.mean(np.power(x - predictions, 2), axis=1)
+        error_df = pd.DataFrame({'reconstruction_error': mse})
+        print('MSE: {}'.format(mse))
+        print(error_df.describe())
 
     def fit(self, dataset, epochs=10, steps_per_epoch=30, validation_data=None, validation_steps=None,
             save_dir='results/', file_name='ae_weights.h5', log_name='Autoencoder'):
