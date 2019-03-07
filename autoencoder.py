@@ -61,7 +61,7 @@ class SymmetricAutoencoder:
         predictions = self.model.predict(x)
         mse = np.mean(np.power(x - predictions, 2), axis=1)
         error_df = pd.DataFrame({'reconstruction_error': mse})
-        print('MSE: {}'.format(mse))
+        print('MSE: {}'.format(np.mean(mse)))
         print(error_df.describe())
 
     def fit(self, dataset, epochs=10, steps_per_epoch=30, validation_data=None, validation_steps=None,
