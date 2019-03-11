@@ -83,6 +83,7 @@ class VariationalAutoencoder:
 
     def __init__(self, dims, act='relu', init='glorot_uniform', noise_stddev=0.0):
         n_stacks = len(dims) - 1
+
         # input
         x = Input(shape=(dims[0],), name='input')
         encoder = GaussianNoise(noise_stddev)(x)
@@ -96,8 +97,8 @@ class VariationalAutoencoder:
         # variational part
         z_mean = Dense(dims[-1], name='z_mean')(encoder)
         z_log_var = Dense(dims[-1], name='z_log_var')(encoder)
+
         # use reparameterization trick to push the sampling out as input
-        # note that "output_shape" isn't necessary with the TensorFlow backend
         z = Lambda(self.sampling, output_shape=(dims[-1],), name='z')([z_mean, z_log_var])
         encoder = Model(x, [z_mean, z_log_var, z], name='encoder')
         encoder.summary()
@@ -117,9 +118,10 @@ class VariationalAutoencoder:
 
         outputs = decoder(encoder(x)[2])
         self.model = Model(inputs=x, outputs=outputs, name='VAE')
-        self.encoder = Model(inputs=x, outputs=outputs, name='encoder')
+        self.encoder = encoder
 
-    def sampling(self, args):
+    @staticmethod
+    def sampling(args):
         """Reparameterization trick by sampling from an isotropic unit Gaussian.
         # Arguments
             args (tensor): mean and log of variance of Q(z|X)
@@ -160,7 +162,7 @@ class VariationalAutoencoder:
         print(error_df.describe())
 
     def fit(self, dataset, epochs=10, steps_per_epoch=30, validation_data=None, validation_steps=None,
-            save_dir='results/', file_name='ae_weights.h5', log_name='Autoencoder'):
+            save_dir='results/', file_name='vae_weights.h5', log_name='Variational Autoencoder'):
 
         tensorboard = tf.keras.callbacks.TensorBoard(log_dir=(save_dir + "{}".format(log_name)))
         checkpoint = ModelCheckpoint(save_dir + "ae_weights.{epoch:02d}-{loss:.5f}.h5", monitor='loss',
