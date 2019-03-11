@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 
-from autoencoder import SymmetricAutoencoder, NumpyDataset
+from autoencoder import SymmetricAutoencoder, VariationalAutoencoder, NumpyDataset
 
 df = pd.read_csv('./data/train.csv', delimiter=',')
 
@@ -39,7 +39,7 @@ ae_input_size = 200
 ae_train_dataset = NumpyDataset(np_array=x_train, batch_size=180000)
 ae_test_dataset = NumpyDataset(np_array=x_test, batch_size=10000)
 
-ae_model = SymmetricAutoencoder([ae_input_size, 100, 100, 50], noise_stddev=0.01)
+ae_model = VariationalAutoencoder([ae_input_size, 100, 100, 50], noise_stddev=0.01)
 opt = tf.keras.optimizers.Nadam(lr=0.0001)
 ae_model.compile(optimizer=opt, loss='mse')
 ae_model.summary()
@@ -47,7 +47,7 @@ ae_model.summary()
 # ae_model.fit(ae_train_dataset._dataset, epochs=5, steps_per_epoch=1,
 #              validation_data=ae_test_dataset._dataset, validation_steps=1)
 
-model = SymmetricAutoencoder([ae_input_size, 100, 100, 50], noise_stddev=0.01)
+model = VariationalAutoencoder([ae_input_size, 100, 100, 50], noise_stddev=0.01)
 model.load_weights("./results/ae_weights.h5")
 ae_model.evaluate(x_dev)
 
