@@ -106,7 +106,7 @@ class VariationalAutoencoder:
         y = latent_inputs
         # internal layers in decoder
         for i in range(n_stacks - 1, 0, -1):
-            y = Dense(dims[i], activation=act, kernel_initializer=init, name='decoder_%d' % i)(latent_inputs)
+            y = Dense(dims[i], activation=act, kernel_initializer=init, name='decoder_%d' % i)(y)
             # y = BatchNormalization(momentum=0.66)(decoder)
             # y = Dropout(0.3)(decoder)
 
@@ -126,7 +126,6 @@ class VariationalAutoencoder:
         # Returns
             z (tensor): sampled latent vector
         """
-
         z_mean, z_log_var = args
         batch = K.shape(z_mean)[0]
         dim = K.int_shape(z_mean)[1]
