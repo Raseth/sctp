@@ -81,7 +81,7 @@ h = Dense(2, activation=tf.nn.softmax, kernel_initializer='glorot_uniform', name
 model = tf.keras.models.Model(inputs=vae_encoder.input, outputs=h)
 
 model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',  # returns probability
+              loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
 model.fit(x_train, y_train, epochs=3)
