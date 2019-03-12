@@ -17,6 +17,14 @@ dev = test.sample(frac=0.5, random_state=200)
 test = test.drop(dev.index)
 print(len(train), len(test), len(dev))
 
+# copying rows with target 1, so both classes will have same amount of data rows
+print((train[train['target'] == 0].shape[0] - train[train['target'] == 1].shape[0]) /
+      train[train['target'] == 1].shape[0])
+train.reset_index(inplace=True)
+train_one = pd.concat([train[train['target'] == 1]]*8, ignore_index=True)
+train = train.append([train_one], ignore_index=True)
+
+print(train['target'].value_counts())
 
 ID_code_train = train['ID_code'].values
 y_train = train['target'].values
