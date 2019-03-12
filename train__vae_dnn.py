@@ -55,8 +55,8 @@ opt = tf.keras.optimizers.Nadam(lr=0.0001)
 ae_model.compile(optimizer=opt, loss='mse')
 ae_model.summary()
 
-# ae_model.fit(ae_train_dataset._dataset, epochs=5, steps_per_epoch=1,
-#              validation_data=ae_test_dataset._dataset, validation_steps=1)
+ae_model.fit(ae_train_dataset._dataset, epochs=5, steps_per_epoch=1,
+             validation_data=ae_test_dataset._dataset, validation_steps=1)
 
 ae_model = VariationalAutoencoder(vae_architecture, noise_stddev=0.01)
 ae_model.load_weights("./results/vae_weights.h5")
@@ -72,15 +72,13 @@ x = vae_encoder.output[2]  # output from vae; there are 3 layer at the end, wher
 # (and [0] is z_mean; [1] is z_log_var)
 
 
-# x = Input(shape=(200,), name='input')  # jak z VAE, to to zakomentowac
 h = Dense(256, activation=tf.nn.relu, kernel_initializer='glorot_uniform', name='layer_1')(x)
 # h = BatchNormalization(momentum=0.66)(h)
 # h = Dropout(0.3)(h)
 h = Dense(128, activation=tf.nn.relu, kernel_initializer='glorot_uniform', name='layer_2')(h)
 h = Dense(2, activation=tf.nn.softmax, kernel_initializer='glorot_uniform', name='output')(h)
 
-model = tf.keras.models.Model(inputs=vae_encoder.input, outputs=h)  # jak z VAE, to to odkomentowac
-# model = tf.keras.models.Model(inputs=x, outputs=h)  # jak z VAE, to to zakomentowac
+model = tf.keras.models.Model(inputs=vae_encoder.input, outputs=h)
 
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',  # returns probability
