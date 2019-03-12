@@ -23,8 +23,10 @@ print((train[train['target'] == 0].shape[0] - train[train['target'] == 1].shape[
 train.reset_index(inplace=True)
 train_one = pd.concat([train[train['target'] == 1]]*8, ignore_index=True)
 train = train.append([train_one], ignore_index=True)
-
+train.drop('index', axis=1, inplace=True)
 print(train['target'].value_counts())
+
+
 
 ID_code_train = train['ID_code'].values
 y_train = train['target'].values
@@ -51,6 +53,7 @@ x_output = df_test.values
 x_train = tf.keras.utils.normalize(x_train, axis=1)
 x_test = tf.keras.utils.normalize(x_test, axis=1)
 x_dev = tf.keras.utils.normalize(x_dev, axis=1)
+x_output = tf.keras.utils.normalize(x_output, axis=1)
 
 
 x = Input(shape=(200,), name='input')  # jak z VAE, to to zakomentowac
@@ -83,5 +86,5 @@ predictions_classes = np.argmax(predictions, axis=1)
 
 df_output = pd.read_csv('./data/sample_submission.csv', delimiter=',')
 df_output['target'] = predictions_classes
-
+df_output.to_csv('./data/submission.csv', delimiter=',', index=False)
 a = 0
