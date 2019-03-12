@@ -91,7 +91,7 @@ class VariationalAutoencoder:
         # internal layers in encoder
         for i in range(n_stacks - 1):
             encoder = Dense(dims[i + 1], activation=act, kernel_initializer=init, name='encoder_%d' % i)(encoder)
-            # encoder = BatchNormalization(momentum=0.66)(encoder)
+            encoder = BatchNormalization(momentum=0.66)(encoder)
             # encoder = Dropout(0.3)(h)
 
         # variational part
@@ -119,6 +119,9 @@ class VariationalAutoencoder:
         outputs = decoder(encoder(x)[2])
         self.model = Model(inputs=x, outputs=outputs, name='VAE')
         self.encoder = encoder
+
+    def get_encoder(self):
+        return Model(inputs=self.model.input, outputs=self.model.get_layer("encoder").output)
 
     @staticmethod
     def sampling(args):
