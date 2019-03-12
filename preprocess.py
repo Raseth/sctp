@@ -46,9 +46,10 @@ x_dev = tf.keras.utils.normalize(x_dev, axis=1)
 
 
 x = Input(shape=(200,), name='input')  # jak z VAE, to to zakomentowac
-h = Dense(256, activation=tf.nn.relu, kernel_initializer='glorot_uniform', name='layer_1')(x)
-# h = BatchNormalization(momentum=0.66)(h)
-# h = Dropout(0.3)(h)
+h = GaussianNoise(stddev=0.01)(x)
+h = Dense(256, activation=tf.nn.relu, kernel_initializer='glorot_uniform', name='layer_1')(h)
+h = BatchNormalization(momentum=0.66)(h)
+h = Dropout(0.3)(h)
 h = Dense(128, activation=tf.nn.relu, kernel_initializer='glorot_uniform', name='layer_2')(h)
 h = Dense(2, activation=tf.nn.softmax, kernel_initializer='glorot_uniform', name='output')(h)
 
@@ -58,7 +59,7 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',  # returns probability
               metrics=['accuracy'])
 
-model.fit(x_train, y_train, epochs=3)
+model.fit(x_train, y_train, epochs=5)
 
 val_loss, val_acc = model.evaluate(x_test, y_test)
 print(val_loss)
@@ -69,8 +70,10 @@ val_loss_dev, val_acc_dev = model.evaluate(x_dev, y_dev)
 print(val_loss_dev)
 print(val_acc_dev)
 
-predictions = model.predict(x_test)
-
+predictions = model.predict(x_output)
 predictions_classes = np.argmax(predictions, axis=1)
+
+df_output = pd.read_csv('./data/sample_submission.csv', delimiter=',')
+df_output['target'] = predictions_classes
 
 a = 0
