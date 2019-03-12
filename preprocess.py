@@ -1,9 +1,8 @@
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras.layers import Input, Dense, Lambda, GaussianNoise, BatchNormalization, Dropout
+from tensorflow.keras.layers import Input, Dense, GaussianNoise, BatchNormalization, Dropout
 
-from autoencoder import SymmetricAutoencoder, VariationalAutoencoder, NumpyDataset
 
 df = pd.read_csv('./data/train.csv', delimiter=',')
 df_test = pd.read_csv('./data/test.csv', delimiter=',')
@@ -25,7 +24,6 @@ train_one = pd.concat([train[train['target'] == 1]]*8, ignore_index=True)
 train = train.append([train_one], ignore_index=True)
 train.drop('index', axis=1, inplace=True)
 print(train['target'].value_counts())
-
 
 
 ID_code_train = train['ID_code'].values
@@ -71,7 +69,7 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 model.summary()
-model.fit(x_train, y_train, epochs=1)
+model.fit(x_train, y_train, epochs=50)
 
 val_loss, val_acc = model.evaluate(x_test, y_test)
 print(val_loss)
