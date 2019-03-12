@@ -71,7 +71,7 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 model.summary()
-model.fit(x_train, y_train, epochs=5)
+model.fit(x_train, y_train, epochs=1)
 
 val_loss, val_acc = model.evaluate(x_test, y_test)
 print(val_loss)
@@ -87,5 +87,5 @@ predictions_classes = np.argmax(predictions, axis=1)
 
 df_output = pd.read_csv('./data/sample_submission.csv', delimiter=',')
 df_output['target'] = predictions_classes
-df_output.to_csv('./data/submission.csv', delimiter=',', index=False)
+df_output.to_csv('./data/submission.csv', sep=',', index=False)
 a = 0
